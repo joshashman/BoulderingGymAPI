@@ -10,5 +10,17 @@ namespace BoulderingGymAPI.Data
             : base(options)
         {
         }
+
+        public DbSet<Membership> Memberships {get; set;}
+
+        public DbSet<Session> Sessions {get; set;}
+
+        public DbSet<Booking> Bookings {get; set;}
+
+        public DbSet<ClimbingRoute> Routes {get; set;}
+
+        public DbSet<RouteAttempt> RouteAttempts {get; set;}
+
+        public DbSet<RouteLike> RouteLikes {get; set;}
     }
 }

@@ -3,6 +3,7 @@ using System;
 using BoulderingGymAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoulderingGymAPI.Migrations
 {
     [DbContext(typeof(GymDbContext))]
-    partial class GymDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260219154634_AddRoute")]
+    partial class AddRoute
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -165,56 +168,6 @@ namespace BoulderingGymAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Memberships");
-                });
-
-            modelBuilder.Entity("BoulderingGymAPI.Models.RouteAttempt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("AttemptDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ClimbingRouteId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Completed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClimbingRouteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RouteAttempts");
-                });
-
-            modelBuilder.Entity("BoulderingGymAPI.Models.RouteLike", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ClimbingRouteId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClimbingRouteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RouteLikes");
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.Session", b =>
@@ -412,44 +365,6 @@ namespace BoulderingGymAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BoulderingGymAPI.Models.RouteAttempt", b =>
-                {
-                    b.HasOne("BoulderingGymAPI.Models.ClimbingRoute", "ClimbingRoute")
-                        .WithMany()
-                        .HasForeignKey("ClimbingRouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BoulderingGymAPI.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClimbingRoute");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BoulderingGymAPI.Models.RouteLike", b =>
-                {
-                    b.HasOne("BoulderingGymAPI.Models.ClimbingRoute", "CLimbingRoute")
-                        .WithMany()
-                        .HasForeignKey("ClimbingRouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BoulderingGymAPI.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CLimbingRoute");
 
                     b.Navigation("User");
                 });
