@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
+using BoulderingGymAPI.DTOs;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -12,22 +13,50 @@ namespace BoulderingGymAPI.Controllers
     {
         private readonly GymDbContext _context;
 
-        public RouteAttemptController(GymDbContext context)
+        private readonly ILogger<RouteAttemptController> _logger;
+
+        public RouteAttemptController(
+            GymDbContext context,
+            ILogger<RouteAttemptController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RouteAttempt>>> GetAttempts()
+        public async Task<ActionResult<IEnumerable<RouteAttemptDTO>>> GetAttempts()
         {
-            return await _context.RouteAttempts.ToListAsync();
+            _logger.LogInformation("Retrieved all route attempts");
+
+            var attempts = await _context.RouteAttempts.ToListAsync();
+
+            var attemptDTOs = attempts.Select(a => new RouteAttemptDTO
+            {
+                Id = a.Id,
+                UserId = a.UserId,
+                ClimbingRouteId = a.ClimbingRouteId,
+                AttemptDate = a.AttemptDate,
+                Completed = a.Completed
+            }).ToList();
+
+            return attemptDTOs;
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<RouteAttempt>> CreateAttempt(RouteAttempt attempt)
+        public async Task<ActionResult<RouteAttempt>> CreateAttempt(CreateRouteAttemptDTO dto)
         {
+            _logger.LogInformation("Creating route attempt");
+
+            var attempt = new RouteAttempt
+            {
+            UserId = dto.UserId,
+            ClimbingRouteId = dto.ClimbingRouteId,
+            AttemptDate = dto.AttemptDate,
+            Completed = dto.Completed
+            };
+
             _context.RouteAttempts.Add(attempt);
             await _context.SaveChangesAsync();
 
@@ -41,10 +70,15 @@ namespace BoulderingGymAPI.Controllers
             var attempt = await _context.RouteAttempts.FindAsync(id);
 
             if (attempt == null)
+            {
+                _logger.LogWarning("Route attempt not found");
                 return NotFound();
+            }
 
             _context.RouteAttempts.Remove(attempt);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Route attempt deleted");
 
             return NoContent();
         }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
+using BoulderingGymAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BoulderingGymAPI.Controllers
@@ -11,26 +12,76 @@ namespace BoulderingGymAPI.Controllers
     public class ClimbingRouteController : ControllerBase
     {
         private readonly GymDbContext _context;
+        private readonly ILogger<ClimbingRouteController> _logger;
 
-        public ClimbingRouteController(GymDbContext context)
+        public ClimbingRouteController(
+            GymDbContext context,
+            ILogger<ClimbingRouteController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClimbingRoute>>> GetRoutes()
+        public async Task<ActionResult<IEnumerable<ClimbingRouteDTO>>> GetRoutes()
         {
-            return await _context.Routes.ToListAsync();
+            _logger.LogInformation("Retrieved all routes");
+
+            var routes = await _context.Routes.ToListAsync();
+
+            var routeDTOs = routes.Select(route => new ClimbingRouteDTO
+            {
+                Id = route.Id,
+                Location = route.Location,
+                Difficulty = route.Difficulty,
+                SetByStaffId = route.SetByStaffId,
+                DateSet = route.DateSet,
+                StripDate = route.StripDate
+            }).ToList();
+
+            return routeDTOs;
         }
 
         [Authorize(Roles="Admin")]
         [HttpPost]
-        public async Task<ActionResult<ClimbingRoute>> CreateRoute(ClimbingRoute route)
+        public async Task<ActionResult<ClimbingRoute>> CreateRoute(CreateClimbingRouteDTO dto)
         {
+            _logger.LogInformation("Creating new route");
+
+            var route = new ClimbingRoute
+            {
+                Location = dto.Location,
+                Difficulty = dto.Difficulty,
+                SetByStaffId = dto.SetByStaffId,
+                DateSet = dto.DateSet,
+                StripDate = dto.StripDate
+            };
+
             _context.Routes.Add(route);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetRoutes), new { id = route.Id}, route);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRoute(int id)
+        {
+            var route = await _context.Routes.FindAsync(id);
+
+            if (route == null)
+                {
+                _logger.LogWarning("Route not found");
+                return NotFound();
+                }
+
+            _context.Routes.Remove(route);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Route deleted");
+
+            return NoContent();
         }
     }
 }
