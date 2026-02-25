@@ -33,6 +33,9 @@ namespace BoulderingGymAPI.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
+            await _userManager.AddToRoleAsync(user, "User");
+            await _userManager.AddToRoleAsync(user, "Admin");
+
             return Ok("User registered successfully");    
         }
 

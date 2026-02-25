@@ -23,7 +23,7 @@ namespace BoulderingGymAPI.Controllers
             return await _context.Routes.ToListAsync();
         }
 
-        [Authorize]
+        [Authorize(Roles="Admin")]
         [HttpPost]
         public async Task<ActionResult<ClimbingRoute>> CreateRoute(ClimbingRoute route)
         {

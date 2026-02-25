@@ -23,7 +23,7 @@ namespace BoulderingGymAPI.Controllers
             return await _context.Sessions.ToListAsync();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Session>> CreateSession(Session session)
         {
@@ -33,7 +33,7 @@ namespace BoulderingGymAPI.Controllers
             return CreatedAtAction(nameof(GetSessions), new { id = session.Id}, session);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSession(int id)
         {

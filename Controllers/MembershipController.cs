@@ -24,7 +24,7 @@ namespace BoulderingGymAPI.Controllers
             return await _context.Memberships.ToListAsync();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Membership>> CreateMembership(Membership membership)
         {
@@ -34,7 +34,7 @@ namespace BoulderingGymAPI.Controllers
             return CreatedAtAction(nameof (GetMemberships), new { id = membership.Id }, membership);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMembership(int id)
         {
