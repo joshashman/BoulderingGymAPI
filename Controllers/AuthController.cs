@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BoulderingGymAPI.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -25,6 +26,13 @@ namespace BoulderingGymAPI.Controllers
         }
 
         [HttpPost("register")]
+        [SwaggerOperation(
+            Summary = "Register a new user",
+            Description = "Creates a new user account and assigns default roles."
+        )]
+        [SwaggerResponse(200, "User registered successfully")]
+        [SwaggerResponse(400, "Invalid registration details")]
+    
         public async Task<IActionResult> Register(RegisterDTO dto)
         {
             _logger.LogInformation("Registering new user");
@@ -51,6 +59,12 @@ namespace BoulderingGymAPI.Controllers
         }
 
         [HttpPost("login")]
+        [SwaggerOperation(
+            Summary = "User login",
+            Description = "Authenticates a user and returns a JWT token for API access."
+        )]
+        [SwaggerResponse(200, "Login successful and token returned")]
+        [SwaggerResponse(401, "Invalid login credentials")]
         public async Task<IActionResult> Login(LoginDTO dto)
         {
             _logger.LogInformation("User login attempt");

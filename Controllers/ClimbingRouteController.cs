@@ -5,6 +5,7 @@ using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -28,6 +29,11 @@ namespace BoulderingGymAPI.Controllers
 
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get all climbing routes",
+            Description = "Retrieves all climbing routes currently available in the gym."
+        )]
+        [SwaggerResponse(200, "Routes retrieved successfully")]
         public async Task<ActionResult<IEnumerable<ClimbingRouteDTO>>> GetRoutes()
         {
             _logger.LogInformation("Retrieved all routes");
@@ -49,6 +55,14 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles="Admin")]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Create climbing route",
+            Description = "Creates a new climbing route in the gym. Admin access required."
+        )]
+        [SwaggerResponse(201, "Route created successfully")]
+        [SwaggerResponse(400, "Invalid route data")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
         public async Task<ActionResult<ClimbingRoute>> CreateRoute(CreateClimbingRouteDTO dto)
         {
             _logger.LogInformation("Creating new route");
@@ -69,6 +83,14 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete climbing route",
+            Description = "Deletes a climbing route from the gym. Admin access required."
+        )]
+        [SwaggerResponse(204, "Route deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
+        [SwaggerResponse(404, "Route not found")]
         public async Task<IActionResult> DeleteRoute(int id)
         {
 

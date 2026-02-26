@@ -5,6 +5,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -28,6 +29,12 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get route likes",
+            Description = "Retrieves all route likes."
+        )]
+        [SwaggerResponse(200, "Likes retrieved successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<IEnumerable<RouteLikeDTO>>> GetLikes()
         {
             _logger.LogInformation("Retrieved all route likes");
@@ -46,6 +53,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Like a route",
+            Description = "Records a user's like for a climbing route."
+        )]
+        [SwaggerResponse(201, "Like created successfully")]
+        [SwaggerResponse(400, "Invalid like data")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<RouteLike>> CreateLike(CreateRouteLikeDTO dto)
         {
             _logger.LogInformation("Creating route like");
@@ -63,6 +77,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete a like",
+            Description = "Deletes a route like."
+        )]
+        [SwaggerResponse(204, "Like deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(404, "Like not found")]
         public async Task<IActionResult> DeleteLike(int id)
         {
             _logger.LogInformation("Deleting route like");

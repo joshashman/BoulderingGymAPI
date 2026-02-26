@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.OpenApi.Models;
 using BoulderingGymAPI.Middleware;
 using BoulderingGymAPI.Services;
 using BoulderingGymAPI.Repositories;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

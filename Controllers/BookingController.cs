@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
-using System.Security.Cryptography.X509Certificates;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -29,6 +29,12 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get all bookings",
+            Description = "Retrieves all session bookings."
+        )]
+        [SwaggerResponse(200, "Bookings retrieved successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<IEnumerable<BookingDTO>>> GetBookings()
         {
             _logger.LogInformation("Retrieved all bookings");
@@ -48,6 +54,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Create a booking",
+            Description = "Creates a new booking for a coaching session."
+        )]
+        [SwaggerResponse(201, "Booking created successfully")]
+        [SwaggerResponse(400, "Invalid booking data")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<Booking>> CreateBooking (CreateBookingDTO dto)
         {
             _logger.LogInformation("Creating new booking");
@@ -66,6 +79,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete a booking",
+            Description = "Deletes an existing booking."
+        )]
+        [SwaggerResponse(204, "Booking deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(404, "Booking not found")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
             _logger.LogInformation("Deleting booking");

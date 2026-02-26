@@ -135,3 +135,4 @@
 /Users/josh/BoulderingGymAPI/obj/Debug/net8.0/BoulderingGymAPI.pdb
 /Users/josh/BoulderingGymAPI/obj/Debug/net8.0/BoulderingGymAPI.genruntimeconfig.cache
 /Users/josh/BoulderingGymAPI/obj/Debug/net8.0/ref/BoulderingGymAPI.dll
+/Users/josh/BoulderingGymAPI/bin/Debug/net8.0/Swashbuckle.AspNetCore.Annotations.dll

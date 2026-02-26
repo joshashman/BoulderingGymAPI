@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "mNc3CJ8bFsI=",
+  "dgSpecHash": "tT0dKwiOpdg=",
   "success": true,
   "projectFilePath": "/Users/josh/BoulderingGymAPI/BoulderingGymAPI.csproj",
   "expectedPackageFiles": [
@@ -50,6 +50,7 @@
     "/Users/josh/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.6/sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",
     "/Users/josh/.nuget/packages/sqlitepclraw.provider.e_sqlite3/2.1.6/sqlitepclraw.provider.e_sqlite3.2.1.6.nupkg.sha512",
     "/Users/josh/.nuget/packages/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "/Users/josh/.nuget/packages/swashbuckle.aspnetcore.annotations/6.6.2/swashbuckle.aspnetcore.annotations.6.6.2.nupkg.sha512",
     "/Users/josh/.nuget/packages/swashbuckle.aspnetcore.swagger/6.6.2/swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
     "/Users/josh/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.6.2/swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
     "/Users/josh/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.6.2/swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",

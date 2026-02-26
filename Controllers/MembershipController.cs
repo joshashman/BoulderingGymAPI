@@ -5,6 +5,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -26,8 +27,15 @@ namespace BoulderingGymAPI.Controllers
             _membershipService = membershipService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get memberships",
+            Description = "Retrieves all memberships in the system."
+        )]
+        [SwaggerResponse(200, "Memberships retrieved successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
         public async Task<ActionResult<IEnumerable<MembershipDTO>>> GetMemberships()
         {
             _logger.LogInformation("Retrieved all memberships");
@@ -48,6 +56,14 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Create membership",
+            Description = "Creates a membership for a user."
+        )]
+        [SwaggerResponse(201, "Membership created successfully")]
+        [SwaggerResponse(400, "Invalid membership data")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
         public async Task<ActionResult<Membership>> CreateMembership(CreateMembershipDTO dto)
         {
             _logger.LogInformation("Creating membership");
@@ -67,6 +83,14 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete membership",
+            Description = "Deletes a membership. Admin access required."
+        )]
+        [SwaggerResponse(204, "Membership deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
+        [SwaggerResponse(404, "Membership not found")]
         public async Task<IActionResult> DeleteMembership(int id)
         {
             _logger.LogInformation("Deleting membership");

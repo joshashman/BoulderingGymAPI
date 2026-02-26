@@ -5,6 +5,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -28,6 +29,12 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get route attempts",
+            Description = "Retrieves all climbing route attempts."
+        )]
+        [SwaggerResponse(200, "Attempts retrieved successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<IEnumerable<RouteAttemptDTO>>> GetAttempts()
         {
             _logger.LogInformation("Retrieved all route attempts");
@@ -48,6 +55,12 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Create route attempt",
+            Description = "Records a user's attempt on a climbing route."
+        )]
+        [SwaggerResponse(201, "Attempt created successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
         public async Task<ActionResult<RouteAttempt>> CreateAttempt(CreateRouteAttemptDTO dto)
         {
             _logger.LogInformation("Creating route attempt");
@@ -67,6 +80,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete route attempt",
+            Description = "Deletes a recorded route attempt."
+        )]
+        [SwaggerResponse(204, "Attempt deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(404, "Attempt not found")]
         public async Task<IActionResult> DeleteAttempt(int id)
         {
             _logger.LogInformation("Deleting route attempt");

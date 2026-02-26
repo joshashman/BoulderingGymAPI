@@ -5,6 +5,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using BoulderingGymAPI.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -27,6 +28,11 @@ namespace BoulderingGymAPI.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get all sessions",
+            Description = "Retrieves all coaching sessions available at the gym."
+        )]
+        [SwaggerResponse(200, "Sessions retrieved successfully")]
         public async Task<ActionResult<IEnumerable<SessionDTO>>> GetSessions()
         {
             _logger.LogInformation("Retrieved all sessions");
@@ -48,6 +54,13 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [SwaggerOperation(
+            Summary = "Create a session",
+            Description = "Creates a new coaching session. Admin access required."
+        )]
+        [SwaggerResponse(201, "Session created successfully")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
         public async Task<ActionResult<Session>> CreateSession(CreateSessionDTO dto)
         {
             _logger.LogInformation("Creating new session");
@@ -68,6 +81,14 @@ namespace BoulderingGymAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+            Summary = "Delete a session",
+            Description = "Deletes a coaching session. Admin access required."
+        )]
+        [SwaggerResponse(204, "Session deleted")]
+        [SwaggerResponse(401, "Unauthorized")]
+        [SwaggerResponse(403, "Forbidden")]
+        [SwaggerResponse(404, "Session not found")]
         public async Task<IActionResult> DeleteSession(int id)
         {
             _logger.LogInformation("Deleting session");
