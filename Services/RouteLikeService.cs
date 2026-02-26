@@ -1,44 +1,33 @@
 using Microsoft.EntityFrameworkCore;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
+using BoulderingGymAPI.Repositories;
 
 namespace BoulderingGymAPI.Services
 {
     public class RouteLikeService
     {
-        private readonly GymDbContext _context;
+        private readonly IGenericRepository<RouteLike> _repository;
 
-        public RouteLikeService(GymDbContext context)
+        public RouteLikeService(
+            IGenericRepository<RouteLike> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<List<RouteLike>> GetAllLikes()
         {
-            return await _context.RouteLikes.ToListAsync();
+            return await _repository.GetAll();
         }
 
         public async Task<RouteLike> CreateLike(RouteLike like)
         {
-            _context.RouteLikes.Add(like);
-
-            await _context.SaveChangesAsync();
-
-            return like;
+            return await _repository.Add(like);
         }
 
         public async Task<bool> DeleteLike(int id)
         {
-            var like = await _context.RouteLikes.FindAsync(id);
-
-            if (like == null)
-                return false;
-
-            _context.RouteLikes.Remove(like);
-
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _repository.Delete(id);
         }
     }
 }

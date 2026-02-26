@@ -1,44 +1,32 @@
 using Microsoft.EntityFrameworkCore;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
+using BoulderingGymAPI.Repositories;
 
 namespace BoulderingGymAPI.Services
 {
     public class BookingService
     {
-        private readonly GymDbContext _context;
+        private readonly IGenericRepository<Booking> _repository;
 
-        public BookingService(GymDbContext context)
+        public BookingService(IGenericRepository<Booking> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<List<Booking>> GetAllBookings()
         {
-            return await _context.Bookings.ToListAsync();
+            return await _repository.GetAll();
         }
 
         public async Task<Booking> CreateBooking(Booking booking)
         {
-            _context.Bookings.Add(booking);
-
-            await _context.SaveChangesAsync();
-
-            return booking;
+            return await _repository.Add(booking);
         }
 
         public async Task<bool> DeleteBooking(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
-
-            if (booking == null)
-                return false;
-
-            _context.Bookings.Remove(booking);
-
-            await _context.SaveChangesAsync();
-
-            return true;
+            return await _repository.Delete(id);
         }
     }
 }

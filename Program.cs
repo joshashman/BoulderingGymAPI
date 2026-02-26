@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.OpenApi.Models;
 using BoulderingGymAPI.Middleware;
 using BoulderingGymAPI.Services;
+using BoulderingGymAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,8 @@ builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<MembershipService>();
 builder.Services.AddScoped<RouteAttemptService>();
 builder.Services.AddScoped<RouteLikeService>();
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddCors(options =>
 {
