@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
+using BoulderingGymAPI.Services;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -13,13 +14,16 @@ namespace BoulderingGymAPI.Controllers
     {
         private readonly GymDbContext _context;
         private readonly ILogger<RouteLikeController> _logger;
+        private readonly RouteLikeService _likeService;
 
         public RouteLikeController(
             GymDbContext context,
-            ILogger<RouteLikeController> logger)
+            ILogger<RouteLikeController> logger,
+            RouteLikeService likeService)
         {
             _context = context;
             _logger = logger;
+            _likeService = likeService;
         }
 
         [Authorize]
@@ -28,13 +32,13 @@ namespace BoulderingGymAPI.Controllers
         {
             _logger.LogInformation("Retrieved all route likes");
 
-            var likes = await _context.RouteLikes.ToListAsync();
+            var likes = await _likeService.GetAllLikes();
 
-            var likeDTOs = likes.Select(l => new RouteLikeDTO
+            var likeDTOs = likes.Select(like => new RouteLikeDTO
             {
-                Id = l.Id,
-                UserId = l.UserId,
-                ClimbingRouteId = l.ClimbingRouteId
+                Id = like.Id,
+                UserId = like.UserId,
+                ClimbingRouteId = like.ClimbingRouteId
             }).ToList();
 
             return likeDTOs;
@@ -52,26 +56,24 @@ namespace BoulderingGymAPI.Controllers
                 ClimbingRouteId = dto.ClimbingRouteId
             };
 
-            _context.RouteLikes.Add(like);
-            await _context.SaveChangesAsync();
+            var createdLike = await _likeService.CreateLike(like);
 
-            return CreatedAtAction(nameof(GetLikes), new { id = like.Id }, like);
+            return CreatedAtAction(nameof(GetLikes), new { id = createdLike.Id }, createdLike);
         }
 
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLike(int id)
         {
-            var like = await _context.RouteLikes.FindAsync(id);
+            _logger.LogInformation("Deleting route like");
 
-            if (like == null)
+            var success = await _likeService.DeleteLike(id);
+
+            if (!success)
             {
                 _logger.LogWarning("Route like not found");
                 return NotFound();
             }
-
-            _context.RouteLikes.Remove(like);
-            await _context.SaveChangesAsync();
 
             _logger.LogInformation("Route like deleted");
 

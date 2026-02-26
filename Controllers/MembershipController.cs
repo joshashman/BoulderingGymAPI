@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
+using BoulderingGymAPI.Services;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -12,15 +13,17 @@ namespace BoulderingGymAPI.Controllers
     public class MembershipController : ControllerBase
     {
         private readonly GymDbContext _context;
-
         private readonly ILogger<MembershipController> _logger;
+        private readonly MembershipService _membershipService;
 
         public MembershipController(
             GymDbContext context,
-            ILogger<MembershipController> logger)
+            ILogger<MembershipController> logger,
+            MembershipService membershipService)
         {
             _context = context;
             _logger = logger;
+            _membershipService = membershipService;
         }
 
         [Authorize]
@@ -29,15 +32,15 @@ namespace BoulderingGymAPI.Controllers
         {
             _logger.LogInformation("Retrieved all memberships");
             
-            var memberships = await _context.Memberships.ToListAsync();
+            var memberships = await _membershipService.GetAllMemberships();
 
-            var membershipDTOs = memberships.Select(m => new MembershipDTO
+            var membershipDTOs = memberships.Select(membership => new MembershipDTO
             {
-                Id = m.Id,
-                UserId = m.UserId,
-                Type = m.Type,
-                StartDate = m.StartDate,
-                ExpiryDate = m.ExpiryDate
+                Id = membership.Id,
+                UserId = membership.UserId,
+                Type = membership.Type,
+                StartDate = membership.StartDate,
+                ExpiryDate = membership.ExpiryDate
             }).ToList();
 
             return membershipDTOs;
@@ -57,27 +60,24 @@ namespace BoulderingGymAPI.Controllers
                 ExpiryDate = dto.ExpiryDate
             };
 
-            _context.Memberships.Add(membership);
-            await _context.SaveChangesAsync();
+            var createdMembership = await _membershipService.CreateMembership(membership);
 
-            return CreatedAtAction(nameof (GetMemberships), new { id = membership.Id }, membership);
+            return CreatedAtAction(nameof (GetMemberships), new { id = createdMembership.Id }, createdMembership);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMembership(int id)
         {
-            var membership = await _context.Memberships.FindAsync(id);
+            _logger.LogInformation("Deleting membership");
 
-            if (membership == null)
+            var success = await _membershipService.DeleteMembership(id);
+
+            if (!success)
             {
                 _logger.LogWarning("Membership not found");
                 return NotFound();
             }
-            
-
-            _context.Memberships.Remove(membership);
-            await _context.SaveChangesAsync();
 
             _logger.LogInformation("Membership deleted");
 

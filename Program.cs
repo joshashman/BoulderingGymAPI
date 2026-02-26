@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.OpenApi.Models;
 using BoulderingGymAPI.Middleware;
+using BoulderingGymAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
-var secretKey = jwtSettings["SecretKey"];
+var secretKey =
+    Environment.GetEnvironmentVariable("JWT_SECRET")
+    ?? jwtSettings["SecretKey"];
+
 var key = Encoding.UTF8.GetBytes(secretKey!);
 
 builder.Services.AddAuthentication(options =>
@@ -74,6 +78,13 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services.AddScoped<ClimbingRouteService>();
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<MembershipService>();
+builder.Services.AddScoped<RouteAttemptService>();
+builder.Services.AddScoped<RouteLikeService>();
 
 builder.Services.AddCors(options =>
 {

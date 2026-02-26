@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
+using BoulderingGymAPI.Services;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -12,15 +13,17 @@ namespace BoulderingGymAPI.Controllers
     public class RouteAttemptController : ControllerBase
     {
         private readonly GymDbContext _context;
-
         private readonly ILogger<RouteAttemptController> _logger;
+        private readonly RouteAttemptService _attemptService;
 
         public RouteAttemptController(
             GymDbContext context,
-            ILogger<RouteAttemptController> logger)
+            ILogger<RouteAttemptController> logger,
+            RouteAttemptService attemptService)
         {
             _context = context;
             _logger = logger;
+            _attemptService = attemptService;
         }
 
         [Authorize]
@@ -29,15 +32,15 @@ namespace BoulderingGymAPI.Controllers
         {
             _logger.LogInformation("Retrieved all route attempts");
 
-            var attempts = await _context.RouteAttempts.ToListAsync();
+            var attempts = await _attemptService.GetAllAttempts();
 
-            var attemptDTOs = attempts.Select(a => new RouteAttemptDTO
+            var attemptDTOs = attempts.Select(attempt => new RouteAttemptDTO
             {
-                Id = a.Id,
-                UserId = a.UserId,
-                ClimbingRouteId = a.ClimbingRouteId,
-                AttemptDate = a.AttemptDate,
-                Completed = a.Completed
+                Id = attempt.Id,
+                UserId = attempt.UserId,
+                ClimbingRouteId = attempt.ClimbingRouteId,
+                AttemptDate = attempt.AttemptDate,
+                Completed = attempt.Completed
             }).ToList();
 
             return attemptDTOs;
@@ -57,26 +60,24 @@ namespace BoulderingGymAPI.Controllers
             Completed = dto.Completed
             };
 
-            _context.RouteAttempts.Add(attempt);
-            await _context.SaveChangesAsync();
+            var createdAttempt = await _attemptService.CreateAttempt(attempt);
 
-            return CreatedAtAction(nameof(GetAttempts), new { id = attempt.Id }, attempt);
+            return CreatedAtAction(nameof(GetAttempts), new { id = createdAttempt.Id }, createdAttempt);
         }
 
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttempt(int id)
         {
-            var attempt = await _context.RouteAttempts.FindAsync(id);
+            _logger.LogInformation("Deleting route attempt");
 
-            if (attempt == null)
+            var success = await _attemptService.DeleteAttempt(id);
+
+            if (!success)
             {
                 _logger.LogWarning("Route attempt not found");
                 return NotFound();
             }
-
-            _context.RouteAttempts.Remove(attempt);
-            await _context.SaveChangesAsync();
 
             _logger.LogInformation("Route attempt deleted");
 

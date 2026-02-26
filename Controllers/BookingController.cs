@@ -5,6 +5,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using System.Security.Cryptography.X509Certificates;
+using BoulderingGymAPI.Services;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -14,13 +15,16 @@ namespace BoulderingGymAPI.Controllers
     {
         private readonly GymDbContext _context;
         private readonly ILogger<BookingController> _logger;
+        private readonly BookingService _bookingService;
 
         public BookingController(
             GymDbContext context,
-            ILogger<BookingController> logger)
+            ILogger<BookingController> logger,
+            BookingService bookingService)
         {
             _context = context;
             _logger = logger;
+            _bookingService = bookingService;
         }
 
         [Authorize]
@@ -29,14 +33,14 @@ namespace BoulderingGymAPI.Controllers
         {
             _logger.LogInformation("Retrieved all bookings");
 
-            var bookings = await _context.Bookings.ToListAsync();
+            var bookings = await _bookingService.GetAllBookings();
 
-            var bookingDTOs = bookings.Select(b => new BookingDTO
+            var bookingDTOs = bookings.Select(booking => new BookingDTO
             {
-                Id = b.Id,
-                UserId = b.UserId,
-                SessionId = b.SessionId,
-                Price = b.Price
+                Id = booking.Id,
+                UserId = booking.UserId,
+                SessionId = booking.SessionId,
+                Price = booking.Price
             }).ToList();
 
             return bookingDTOs;
@@ -55,26 +59,24 @@ namespace BoulderingGymAPI.Controllers
                 Price = dto.Price
             };
             
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
+            var createdBooking = await _bookingService.CreateBooking(booking);
 
-            return CreatedAtAction(nameof(GetBookings), new { id = booking.Id }, booking);
+            return CreatedAtAction(nameof(GetBookings), new { id = createdBooking.Id }, createdBooking);
         }
 
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
-            var booking = await _context.Bookings.FindAsync(id);
+            _logger.LogInformation("Deleting booking");
 
-            if (booking == null)
+            var success = await _bookingService.DeleteBooking(id);
+
+            if (!success)
             {
                 _logger.LogWarning("Booking not found");
                 return NotFound();
             }
-
-            _context.Bookings.Remove(booking);
-            await _context.SaveChangesAsync();
 
             _logger.LogInformation("Booking deleted");
 

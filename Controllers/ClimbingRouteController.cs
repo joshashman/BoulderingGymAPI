@@ -4,6 +4,7 @@ using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using BoulderingGymAPI.Services;
 
 namespace BoulderingGymAPI.Controllers
 {
@@ -13,13 +14,16 @@ namespace BoulderingGymAPI.Controllers
     {
         private readonly GymDbContext _context;
         private readonly ILogger<ClimbingRouteController> _logger;
+        private readonly ClimbingRouteService _routeService;
 
         public ClimbingRouteController(
             GymDbContext context,
-            ILogger<ClimbingRouteController> logger)
+            ILogger<ClimbingRouteController> logger,
+            ClimbingRouteService routeService)
         {
             _context = context;
             _logger = logger;
+            _routeService = routeService;
         }
 
 
@@ -28,7 +32,7 @@ namespace BoulderingGymAPI.Controllers
         {
             _logger.LogInformation("Retrieved all routes");
 
-            var routes = await _context.Routes.ToListAsync();
+            var routes = await _routeService.GetAllRoutes();
 
             var routeDTOs = routes.Select(route => new ClimbingRouteDTO
             {
@@ -58,26 +62,25 @@ namespace BoulderingGymAPI.Controllers
                 StripDate = dto.StripDate
             };
 
-            _context.Routes.Add(route);
-            await _context.SaveChangesAsync();
+            var createdRoute = await _routeService.CreateRoute(route);
 
-            return CreatedAtAction(nameof(GetRoutes), new { id = route.Id}, route);
+            return CreatedAtAction(nameof(GetRoutes), new { id = createdRoute.Id}, createdRoute);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoute(int id)
         {
-            var route = await _context.Routes.FindAsync(id);
 
-            if (route == null)
+            _logger.LogInformation("Deleting route");
+
+            var success = await _routeService.DeleteRoute(id);
+
+            if (!success)
                 {
                 _logger.LogWarning("Route not found");
                 return NotFound();
                 }
-
-            _context.Routes.Remove(route);
-            await _context.SaveChangesAsync();
 
             _logger.LogInformation("Route deleted");
 
