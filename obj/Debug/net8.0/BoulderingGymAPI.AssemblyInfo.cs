@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BoulderingGymAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f902cc29f4c3a1e24b9f301d92b572084e21884")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4e524822a4afafde22abe57b0849bf28acb6f0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("BoulderingGymAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BoulderingGymAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
