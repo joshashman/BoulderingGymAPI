@@ -5,7 +5,6 @@ using BoulderingGymAPI.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using BoulderingGymAPI.Middleware;
 using BoulderingGymAPI.Services;
 using BoulderingGymAPI.Repositories;

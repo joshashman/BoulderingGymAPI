@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using BoulderingGymAPI.Data;
 using BoulderingGymAPI.Models;
 using BoulderingGymAPI.Repositories;
 
