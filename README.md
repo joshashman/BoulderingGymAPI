@@ -16,5 +16,11 @@ dotnet run
 For testing API endpoints:  
 http://localhost:xxxx/swagger
 
+Domain:  
+https://joshboulderinggymapi-f4cghahvbxhrhycn.swedencentral-01.azurewebsites.net
+
+Domain for swagger:  
+https://joshboulderinggymapi-f4cghahvbxhrhycn.swedencentral-01.azurewebsites.net/swagger
+
 Author:  
 Joshua Ashman
