@@ -106,7 +106,7 @@ namespace BoulderingGymAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.ClimbingRoute", b =>
@@ -126,12 +126,18 @@ namespace BoulderingGymAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("SetByStaffId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("StripDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Routes");
+                    b.HasIndex("SetByStaffId");
+
+                    b.ToTable("Routes", (string)null);
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.Membership", b =>
@@ -158,7 +164,7 @@ namespace BoulderingGymAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Memberships");
+                    b.ToTable("Memberships", (string)null);
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.RouteAttempt", b =>
@@ -186,7 +192,7 @@ namespace BoulderingGymAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RouteAttempts");
+                    b.ToTable("RouteAttempts", (string)null);
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.RouteLike", b =>
@@ -208,7 +214,7 @@ namespace BoulderingGymAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RouteLikes");
+                    b.ToTable("RouteLikes", (string)null);
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.Session", b =>
@@ -238,7 +244,7 @@ namespace BoulderingGymAPI.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -386,6 +392,17 @@ namespace BoulderingGymAPI.Migrations
                     b.Navigation("Session");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BoulderingGymAPI.Models.ClimbingRoute", b =>
+                {
+                    b.HasOne("BoulderingGymAPI.Models.ApplicationUser", "SetByStaff")
+                        .WithMany()
+                        .HasForeignKey("SetByStaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SetByStaff");
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.Membership", b =>
