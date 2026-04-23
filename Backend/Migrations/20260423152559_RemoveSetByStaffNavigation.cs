@@ -9,19 +9,25 @@ namespace BoulderingGymAPI.Migrations
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Routes_AspNetUsers_SetByStaffId",
-                table: "Routes");
+{
+    migrationBuilder.Sql(@"
+        DROP INDEX IF EXISTS IX_Routes_SetByStaffId;
+    ");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Routes_SetByStaffId",
-                table: "Routes");
-
-            migrationBuilder.DropColumn(
-                name: "SetByStaffId",
-                table: "Routes");
-        }
+    migrationBuilder.Sql(@"
+        CREATE TABLE Routes_new (
+            Id INTEGER NOT NULL CONSTRAINT PK_Routes PRIMARY KEY AUTOINCREMENT,
+            Location TEXT NOT NULL,
+            Difficulty TEXT NOT NULL,
+            DateSet TEXT NOT NULL,
+            StripDate TEXT NULL
+        );
+        INSERT INTO Routes_new (Id, Location, Difficulty, DateSet, StripDate)
+        SELECT Id, Location, Difficulty, DateSet, StripDate FROM Routes;
+        DROP TABLE Routes;
+        ALTER TABLE Routes_new RENAME TO Routes;
+    ");
+}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
