@@ -126,16 +126,10 @@ namespace BoulderingGymAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("SetByStaffId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime?>("StripDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SetByStaffId");
 
                     b.ToTable("Routes");
                 });
@@ -392,17 +386,6 @@ namespace BoulderingGymAPI.Migrations
                     b.Navigation("Session");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BoulderingGymAPI.Models.ClimbingRoute", b =>
-                {
-                    b.HasOne("BoulderingGymAPI.Models.ApplicationUser", "SetByStaff")
-                        .WithMany()
-                        .HasForeignKey("SetByStaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SetByStaff");
                 });
 
             modelBuilder.Entity("BoulderingGymAPI.Models.Membership", b =>
