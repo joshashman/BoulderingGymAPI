@@ -5,9 +5,6 @@ namespace BoulderingGymAPI.DTOs
     public class CreateSessionDTO
     {
         [Required]
-        public string InstructorId { get; set; } = string.Empty;
-
-        [Required]
         public int MaxCapacity { get; set; }
 
         [Required]
@@ -23,8 +20,6 @@ namespace BoulderingGymAPI.DTOs
     public class SessionDTO
     {
         public int Id { get; set; }
-
-        public string InstructorId { get; set; } = string.Empty;
 
         public int MaxCapacity { get; set; }
 

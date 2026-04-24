@@ -5,11 +5,6 @@ namespace BoulderingGymAPI.Models
     public class Session
     {
         public int Id {get; set;}
-        
-        public string InstructorId {get;set;} = null!;
-        
-        [ForeignKey("InstructorId")]
-        public ApplicationUser Instructor {get;set;} = null!;
 
         public int MaxCapacity {get; set;}
         

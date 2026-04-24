@@ -41,7 +41,6 @@ namespace BoulderingGymAPI.Controllers
             var sessionDTOs = sessions.Select(session => new SessionDTO
             {
                 Id = session.Id,
-                InstructorId = session.InstructorId,
                 MaxCapacity = session.MaxCapacity,
                 StartTime = session.StartTime,
                 EndTime = session.EndTime,
@@ -67,7 +66,6 @@ namespace BoulderingGymAPI.Controllers
             var session = new Session
             {
                 MaxCapacity = dto.MaxCapacity,
-                InstructorId = dto.InstructorId,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
                 Description = dto.Description
